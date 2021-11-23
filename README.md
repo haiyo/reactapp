@@ -14,6 +14,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+If you get an error on 'react-scripts' is not recognized as an internal or external command, just run the following command.
+
+**npm install react-scripts --save**
+
 ### `nodemon server.js`
 
 The upload of video file is using Nodejs. So you will also need to run nodemon server.js in order for upload to work.
