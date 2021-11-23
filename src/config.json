@@ -1,0 +1,7 @@
+{
+    "Server_URL": "http://localhost:8000",
+    "File_upload": {
+        "numFiles": 1,
+        "sizeLimit": 20000000
+    }
+}
