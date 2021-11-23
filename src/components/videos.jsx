@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Video from "./video";
 import Data from "../storage/db.json";
+// How does this component know when the JSON file changes??
 
+// There's only a render method here, so perhaps this could be a functional component instead of a class?
 class Videos extends Component {
 
     render() {
         if(Data.length === undefined) {
+        // if (!Data || !Data.length) {    
             return (
                 <main>
                     <div className="album py-5 bg-light">
