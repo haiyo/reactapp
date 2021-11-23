@@ -14,6 +14,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+### `nodemon server.js`
+
+The upload of video file is using Nodejs. So you will also need to run nodemon server.js in order for upload to work.
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
