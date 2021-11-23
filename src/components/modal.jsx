@@ -55,6 +55,7 @@ class Modal extends Component {
     };
 
     maxSelectFile = (event) => {
+        // Why?
         let files = event.target.files; // create file object
 
         if (files.length > config.File_upload.numFiles) { 
@@ -68,6 +69,7 @@ class Modal extends Component {
 
     checkMimeType = (event) => {
         //getting file object
+        // Why?
         let files = event.target.files;
 
         //define message container
@@ -75,9 +77,13 @@ class Modal extends Component {
         // list allow mime type
         const types = ["video/mp4"];
         
+        // This whole let/loop could be a single files.some() function, I think?
         // loop access array
         for(let x = 0; x<files.length; x++) {
             // compare file type find doesn"t matach
+            
+            // Seems convoluted ;-)
+            // if (!types.includes(files[x].type)) {
             if (types.every(type => files[x].type !== type)) {
                 // create error message and assign to container   
                 err = "Unknown file type. Please upload only MP4 format.\n";
@@ -85,6 +91,7 @@ class Modal extends Component {
             }
         };
 
+        // Why not ... if (!err) {
         if (err !== "") {
             event.target.value = null; // discard selected file
             toast.warn(err);
@@ -95,6 +102,8 @@ class Modal extends Component {
     };
 
     checkFileSize = (event) => {
+        // Why, again.
+        // const { files } = event.target;
         let files = event.target.files;
         let size = config.File_upload.size; 
         let err = "";
