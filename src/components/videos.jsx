@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Video from "./video";
-import Data from "../storage/db.json";
+import Data from "../db.json";
 
 class Videos extends Component {
 
@@ -27,6 +27,7 @@ class Videos extends Component {
                                     key={data.id}
                                     title={data.title}
                                     image={data.image}
+                                    filename={data.filename}
                                     datetime={data.datetime}
                                 />)}
                             </div>

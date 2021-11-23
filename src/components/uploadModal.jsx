@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import config from "./../config.json";
 
-class Modal extends Component {
+class UploadModal extends Component {
     state = {
         selectedFile: null,
         loaded: 0
@@ -51,6 +51,13 @@ class Modal extends Component {
         .then(res => {
             toast.success("Upload successful!");
             //console.log(res.statusText);
+            
+            setTimeout(function() {
+                this.textInput.value = "";
+                this.resetsFileInput();
+                window.refresh();
+            }
+            .bind(this), 2000);
         });
     };
 
@@ -115,6 +122,14 @@ class Modal extends Component {
         return true;
     }
 
+    resetsFileInput = (event) => {
+        let randomString = Math.random().toString(36);
+
+        this.setState({
+            theInputKey: randomString
+        });
+    }
+
     render() {
         return (
             <div className="modal fade" id="uploadModal" role="dialog" 
@@ -123,6 +138,9 @@ class Modal extends Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="uploadModalLabel">Upload Video</h5>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
                         <div className="modal-body">
                             <form method="post" action="#" id="#">
@@ -133,6 +151,7 @@ class Modal extends Component {
                                 </div>
                                 <div className="form-group files">
                                     <input type="file" className="form-control" multiple 
+                                    key={this.state.theInputKey || '' } 
                                     onChange={this.onChangeHandler} />
                                 </div>
                             </form>
@@ -152,4 +171,4 @@ class Modal extends Component {
     }
 }
  
-export default Modal;
+export default UploadModal;
