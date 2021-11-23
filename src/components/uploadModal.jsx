@@ -13,14 +13,14 @@ class UploadModal extends Component {
     onChangeHandler = (event) => {
         var files = event.target.files;
         
-        if(this.maxSelectFile(event) && this.checkMimeType(event) && this.checkFileSize(event)) {
+        if(this.maxSelectFile(event, files) && this.checkMimeType(event, files) && this.checkFileSize(event, files)) {
             this.setState({
                 selectedFile: files
             });
         }
     }
 
-    onClickHandler = (event) => {
+    onClickHandler = () => {
         // NOTE: Since this is a quick bake, we don't handle complex validation.
         const data = new FormData();
 
@@ -61,9 +61,7 @@ class UploadModal extends Component {
         });
     };
 
-    maxSelectFile = (event) => {
-        let files = event.target.files; // create file object
-
+    maxSelectFile = (event, files) => {
         if (files.length > config.File_upload.numFiles) { 
             const msg = "Only " + config.File_upload.numFiles + " file can be uploaded at a time";
             event.target.value = null; // discard selected file
@@ -73,10 +71,7 @@ class UploadModal extends Component {
         return true;
     };
 
-    checkMimeType = (event) => {
-        //getting file object
-        let files = event.target.files;
-
+    checkMimeType = (event, files) => {
         //define message container
         let err = "";
         // list allow mime type
@@ -101,8 +96,7 @@ class UploadModal extends Component {
         return true;
     };
 
-    checkFileSize = (event) => {
-        let files = event.target.files;
+    checkFileSize = (event, files) => {
         let size = config.File_upload.size; 
         let err = "";
 
