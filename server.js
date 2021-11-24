@@ -13,7 +13,7 @@ app.use(cors());
 // If any files changes in the public folder, react will refresh the portal.
 var videoStorageDir = "./storage/videos/";
 var imageStorageDir = "./storage/images/";
-var fileDB = "./src/db.json";
+var fileDB = "./db.json";
 var screenshotTaken = false;
 var storage = multer.diskStorage({
         destination: function (req, file, cb) {
@@ -27,7 +27,7 @@ var storage = multer.diskStorage({
 
 if (!fs.existsSync(fileDB)) {
     // try creating one.
-    fs.writeFile(fileDB, "{}", function(err) {
+    fs.writeFile(fileDB, "", function(err) {
         if(err) {
             console.log(err);
         }
@@ -53,6 +53,19 @@ app.post("/upload",function(req, res) {
         }
         return res.status(200).send(req.file);
     });
+});
+
+// NOTE: For test project, we just plain read with no security like token set.
+app.get("/readDB",function(req, res) {
+    try {
+        const data = fs.readFileSync(fileDB, "utf8");
+        console.log(data);
+        return res.status(200).send(data);
+    }
+    catch (err) {
+        console.error(err);
+        return res.status(500).json(err);
+    }
 });
 
 function takeScreenshots(filename) {
@@ -89,7 +102,7 @@ function writeDB(title, filename) {
         var records = fs.readFileSync(fileDB);
         
         // Clear initial startup empty brace.
-        if(records.toString() === "{}") {
+        if(records.toString() === "") {
             var obj = new Array();
             obj.push({
                 id: 1, 
