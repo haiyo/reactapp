@@ -1,11 +1,13 @@
 import { shallow, configure } from "enzyme";
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import UploadModal from "../uploadModal";
-import { render, screen } from "@testing-library/react"
+import { render, screen, cleanup, waitFor } from "@testing-library/react"
 import "@testing-library/jest-dom/extend-expect";
 import config from "./../../config.json";
 
 configure({ adapter: new Adapter() });
+
+afterEach(cleanup);
 
 const event = new Array();
 event["target"] = new Array();
@@ -59,4 +61,20 @@ it("validate file on more than number of files limit should return false", () =>
     
     const uploadComponent = shallow(<UploadModal />);
     expect(uploadComponent.instance().maxSelectFile(event, files)).toBe(false);
+});
+
+it("validate form submission with all empty fields", async () => {
+    const uploadComponent = shallow(<UploadModal />);
+    expect(uploadComponent.instance().validate()).toBe(false);
+});
+
+it("validate form submission with data", async () => {
+    const uploadComponent = shallow(<UploadModal />);
+    
+    uploadComponent.setState({
+        title: "Test",
+        selectedFile: files
+    });
+
+    expect(uploadComponent.instance().validate()).toBe(true);
 });

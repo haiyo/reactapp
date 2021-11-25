@@ -6,8 +6,14 @@ import config from "./../config.json";
 
 class UploadModal extends Component {
     state = {
+        title: "",
         selectedFile: null,
-        loaded: 0
+        loaded: 0,
+        data: null
+    }
+
+    changeTitleHandler = (event) => {
+        this.setState({title: event.target.value});
     }
 
     onChangeHandler = (event) => {
@@ -20,28 +26,11 @@ class UploadModal extends Component {
         }
     }
 
-    onClickHandler = () => {
-        // NOTE: Since this is a quick bake, we don't handle complex validation.
-        const data = new FormData();
+    onClickHandler = async () => {
+        await this.validate();
 
-        if(this.textInput.value === "") {
-             toast.error("Please enter a title for the video.");
-             this.textInput.focus();
-             return false;
-        }
-        
-        data.append("title", this.textInput.value);
-
-        if(this.state.selectedFile === null) {
-            toast.error("Please select MP4 video for upload.");
-            return false;
-        }
-
-        for(var x = 0; x<this.state.selectedFile.length; x++) {
-            data.append("file", this.state.selectedFile[x]);
-        }
-
-        axios.post(config.Server_URL + "/upload", data, { 
+        if(this.state.data !== null) {
+            axios.post(config.Server_URL + "/upload", this.state.data, { 
             onUploadProgress: ProgressEvent => {
                 this.setState({
                     loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
@@ -53,13 +42,42 @@ class UploadModal extends Component {
             //console.log(res.statusText);
             
             setTimeout(function() {
-                this.textInput.value = "";
+                this.setState({
+                    data: null,
+                    title: "",
+                    selectedFile: null,
+                    loaded: 0
+                });
                 this.resetsFileInput();
                 window.refresh();
             }
             .bind(this), 2000);
             return true;
         });
+        }
+    };
+
+    validate = () => {
+        // NOTE: Since this is a quick bake, we don't handle complex validation.
+        const data = new FormData();
+
+        if(this.state.title === "") {
+            toast.error("Please enter a title for the video.");
+            return false;
+        }
+        
+        data.append("title", this.state.title);
+
+        if(this.state.selectedFile === null) {
+            toast.error("Please select MP4 video for upload.");
+            return false;
+        }
+
+        for(var x = 0; x<this.state.selectedFile.length; x++) {
+            data.append("file", this.state.selectedFile[x]);
+        }
+        this.setState({data: data}, function () { });
+        return true;
     };
 
     maxSelectFile = (event, files) => {
@@ -140,8 +158,8 @@ class UploadModal extends Component {
                         <div className="modal-body">
                             <form method="post" action="#" id="#">
                                 <div className="form-group mb-2">
-                                    <input type="text" className="form-control" id="title" 
-                                    ref={(input) => { this.textInput = input; }}
+                                    <input type="text" className="form-control" id="title" data-testid="title"
+                                    onChange={this.changeTitleHandler}
                                     placeholder="Enter a title for this video" />
                                 </div>
                                 <div className="form-group files">

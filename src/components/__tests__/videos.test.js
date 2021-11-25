@@ -2,10 +2,12 @@ import { shallow, configure } from "enzyme";
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import Videos from "../videos";
 import Video from "../video";
-import { render, screen } from "@testing-library/react"
+import { render, screen, cleanup } from "@testing-library/react"
 import "@testing-library/jest-dom/extend-expect";
 
 configure({ adapter: new Adapter() });
+
+afterEach(cleanup);
 
 it("renders without crashing", () => {
     render(<Videos />);
