@@ -58,6 +58,7 @@ class UploadModal extends Component {
                 window.refresh();
             }
             .bind(this), 2000);
+            return true;
         });
     };
 
@@ -97,7 +98,7 @@ class UploadModal extends Component {
     };
 
     checkFileSize = (event, files) => {
-        let size = config.File_upload.size; 
+        let size = config.File_upload.sizeLimit;
         let err = "";
 
         for(var x = 0; x<files.length; x++) {
@@ -126,7 +127,7 @@ class UploadModal extends Component {
 
     render() {
         return (
-            <div className="modal fade" id="uploadModal" role="dialog" 
+            <div className="modal fade" id="uploadModal" role="dialog" data-testid="uploadModal"
             aria-labelledby="uploadModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content">
