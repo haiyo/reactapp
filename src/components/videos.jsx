@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import UploadModal from "./uploadModal";
 import Video from "./video";
 import axios from "axios";
 import config from "./../config.json";
@@ -10,6 +11,10 @@ class Videos extends Component {
     }
 
     componentDidMount() {
+        this.fetchResult();
+    }
+
+    fetchResult = () => {
         axios.get(config.Server_URL + "/readDB")
         .then(res => {
             if(res.data) {
@@ -19,7 +24,7 @@ class Videos extends Component {
                 console.log(res);
             }
         });
-    }
+    };
 
     render() {
         if(this.state.data === null) {
@@ -30,6 +35,7 @@ class Videos extends Component {
                             <h4>There are no videos uploaded yet.</h4>
                         </div>
                     </div>
+                    <UploadModal onUploaded={ () => this.fetchResult() } />
                 </main>
             );
         }
@@ -50,6 +56,7 @@ class Videos extends Component {
                             </div>
                         </div>
                     </div>
+                    <UploadModal onUploaded={ () => this.fetchResult() } />
                 </main>
             );
         }

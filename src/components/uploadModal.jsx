@@ -49,6 +49,8 @@ class UploadModal extends Component {
                     loaded: 0
                 });
                 this.resetsFileInput();
+                const { onUploaded } = this.props
+                onUploaded();
                 window.refresh();
             }
             .bind(this), 2000);
