@@ -21,7 +21,7 @@ class Videos extends Component {
                 this.setState({
                     data: res.data
                 });
-                console.log(res);
+                //console.log(res);
             }
         });
     };

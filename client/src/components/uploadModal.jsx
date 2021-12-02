@@ -147,7 +147,7 @@ class UploadModal extends Component {
 
     render() {
         return (
-            <div className="modal fade" id="uploadModal" role="dialog" data-testid="uploadModal"
+            <div className="modal fade" data-backdrop="false" id="uploadModal" role="dialog" data-testid="uploadModal"
             aria-labelledby="uploadModalLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content">

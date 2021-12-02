@@ -25,14 +25,14 @@
             <script>
               $(document).ready(function () {
                   $("#uploadModal").on("shown.bs.modal", function (e) {
+                    $(this).attr("style", "display:block");
+                    $("#title").val("");
                     $("#title").trigger("focus");
                   });
               });
 
               function closeModal() {
                 $("#uploadModal .close").click();
-                $('body').removeClass('modal-open');
-                $('.modal-backdrop').remove();
               }
             </script>
         </div>
