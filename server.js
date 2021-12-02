@@ -5,19 +5,31 @@ const multer = require("multer");
 const cors = require("cors");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffmpeg = require("fluent-ffmpeg");
+const { config } = require("process");
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 app.use(cors());
 
-// NOTE: Not using public folder for storage due to react monitoring the folder. 
-// If any files changes in the public folder, react will refresh the portal.
-var videoStorageDir = "./storage/videos/";
-var imageStorageDir = "./storage/images/";
-var fileDB = "./db.json";
-var screenshotTaken = false;
-var storage = multer.diskStorage({
+var global = null;
+var settings = null;
+
+if(process.argv[3] == "serverTest") {
+    global = require("./server.global.test");
+}
+else {
+    global = require("./server.global");
+}
+settings = global.getConfig();
+
+function getSettings() {
+    return settings;
+}
+
+exports.getSettings = getSettings;
+
+const storage = multer.diskStorage({
         destination: function (req, file, cb) {
-        cb(null, videoStorageDir);
+        cb(null, settings.videoStorageDir);
     },
     filename: function (req, file, cb) {
         // Always have a unique filename on saved.
@@ -25,9 +37,9 @@ var storage = multer.diskStorage({
     }
 });
 
-if (!fs.existsSync(fileDB)) {
+if (!fs.existsSync(settings.fileDB)) {
     // try creating one.
-    fs.writeFile(fileDB, "", function(err) {
+    fs.writeFile(settings.fileDB, "", function(err) {
         if(err) {
             console.log(err);
         }
@@ -35,7 +47,7 @@ if (!fs.existsSync(fileDB)) {
     });
 }
 
-var upload = multer({ storage: storage }).array("file");
+const upload = multer({ storage: storage }).array("file");
 
 app.post("/upload",function(req, res) {
     upload(req, res, function (err) {
@@ -47,19 +59,18 @@ app.post("/upload",function(req, res) {
         }
         else {
             // We will use Ffmpeg to generate screenshot
-            takeScreenshots(req.files[0].filename, videoStorageDir, imageStorageDir);
+            takeScreenshots(req.files[0].filename, settings.videoStorageDir, settings.imageStorageDir);
 
             writeDB(req.body.title, req.files[0].filename);
         }
-        return res.status(200).send(req.file);
+        return res.status(200).send(req.files[0].filename);
     });
 });
 
 // NOTE: For test project, we just plain read with no security like token set.
 app.get("/readDB",function(req, res) {
     try {
-        const data = fs.readFileSync(fileDB, "utf8");
-        console.log(data);
+        const data = readDB();
         return res.status(200).send(data);
     }
     catch (err) {
@@ -68,15 +79,21 @@ app.get("/readDB",function(req, res) {
     }
 });
 
-function takeScreenshots(filename) {
-    console.log("Generating image from video", videoStorageDir + filename + " Store dir: " + imageStorageDir);
+function readDB() {
+    return fs.readFileSync(settings.fileDB, "utf8");
+}
 
-    ffmpeg({source: videoStorageDir + filename})
+exports.readDB = readDB;
+
+function takeScreenshots(filename) {
+    console.log("Generating image from video", settings.videoStorageDir + filename + " Store dir: " + settings.imageStorageDir);
+
+    ffmpeg({source: settings.videoStorageDir + filename})
     .on("filenames", (filenames) => {
         console.log("Created file names", filenames);
     })
     .on("end", () => {
-        screenshotTaken = true;
+        settings.screenshotTaken = true;
         console.log("job done");
     })
     .on("error", (err) => {
@@ -87,11 +104,13 @@ function takeScreenshots(filename) {
         filename: filename + ".jpg",
         // Take one screenshot. For multiple just add more time marks in array;
         timemarks: [4]
-    }, imageStorageDir);
+    }, settings.imageStorageDir);
 }
 
+exports.takeScreenshots = takeScreenshots;
+
 function writeDB(title, filename) {
-    if(screenshotTaken === false) {
+    if(settings.screenshotTaken === false) {
         /* this checks the flag every 100 milliseconds*/
         setTimeout(function() {
             writeDB(title, filename);
@@ -99,7 +118,7 @@ function writeDB(title, filename) {
     }
     else {
         var data = "";
-        var records = fs.readFileSync(fileDB);
+        var records = fs.readFileSync(settings.fileDB);
         
         // Clear initial startup empty brace.
         if(records.toString() === "") {
@@ -126,16 +145,28 @@ function writeDB(title, filename) {
         data = JSON.stringify(obj);
 
         // Write to file as our DB
-        fs.writeFileSync(fileDB, data, "utf8",
+        fs.writeFileSync(settings.fileDB, data, "utf8",
             // callback function
             function(err) {     
                 if (err) throw err;
                 // if no error
                 console.log("Data is appended to file successfully.")
         });
+        return true;
     }
 }
 
-app.listen(8000, function() {
+exports.writeDB = writeDB;
+
+function testing() {
+    return settings.screenshotTaken;
+}
+
+exports.testing = testing;
+
+
+const appResult = app.listen(8000, function() {
     console.log("App running on port 8000");
 });
+
+exports.appResult = appResult;
