@@ -9,7 +9,7 @@ test("Make sure we are in testing mode", () => {
 });
 
 test("Check if db.test.json is created as our test DB", () => {
-    expect(fs.existsSync("./db.test.json")).toBe(true);
+    expect(fs.existsSync(settings.fileDB)).toBe(true);
 });
 
 test("Write data to our test DB file", () => {
@@ -53,8 +53,8 @@ test("Check if screenshot exist after video uploaded", async () => {
 });
 
 test("Remove test data DB", () => {
-    fs.unlinkSync("./db.test.json");
-    expect(fs.existsSync("./db.test.json")).toBe(false);
+    fs.unlinkSync(settings.fileDB);
+    expect(fs.existsSync(settings.fileDB)).toBe(false);
 });
 
 test("Remove generated screenshot", () => {
