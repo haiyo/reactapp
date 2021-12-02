@@ -27,6 +27,10 @@ The upload of video file is using Nodejs. So you will also need to run nodemon s
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+### `jest ./__tests__/server.test.js serverTest`
+
+Run unit test for server side.
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
