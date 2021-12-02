@@ -31,6 +31,8 @@
 
               function closeModal() {
                 $("#uploadModal .close").click();
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
               }
             </script>
         </div>
